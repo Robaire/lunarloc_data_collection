@@ -1,0 +1,71 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "LunarLoc"
+version = "0.1.0"
+description = "Data generation code for LunarLoc"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10, <3.11"
+authors = [
+    { name = "Annika Thomas", email = "annikat@mit.edu" },
+    { name = "Aleksander Garbuz", email = "agarbuz@mit.edu" },
+    { name = "Allison Eto", email = "allisone@mit.edu" },
+    { name = "Cormac O'Neil", email = "croneill@mit.edu" },
+    { name = "Dami Thomas", email = "dvthomas@mit.edu" },
+    { name = "Jing Tan", email = "jingt630@mit.edu" },
+    { name = "Luke Anger", email = "langer1@mit.edu.com" },
+    { name = "Robaire Galliath", email = "robaire@mit.edu" },
+    { name = "Trevor Jost", email = "trejohst@mit.edu" },
+]
+dependencies = [
+    "orbslam3; sys_platform == 'linux' or sys_platform == 'darwin'",
+    "numpy==1.21.4",
+    "opencv-python==4.10.0.84",
+    "lac-data",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pre-commit>=4.0.1",
+    "ruff>=0.7.4",
+    "pytest>=8.3.3",
+    "coverage[toml]>=7.6.7",
+    "pytest-cov>=6.0.0",
+    "pillow>=11.0.0",
+    "pytest-mock>=3.14.0",
+]
+
+[tool.uv.workspace]
+members = ["leaderboard"]
+
+[tool.uv.sources]
+orbslam3 = { git = "git+ssh://git@github.com/Robaire/orbslam3-python.git", rev="07ed5f2" }
+lac-data = { git = "https://github.com/Robaire/lac-data.git" }
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+pythonpath = [".", "./leaderboard"]
+testpaths = ["test"]
+addopts = ["--import-mode=importlib", "--cov", "--cov-report=term-missing"]
+filterwarnings = [
+    "ignore::DeprecationWarning:pkg_resources",
+]
+
+[tool.coverage]
+run.branch = true
+run.source = ["maple", "test"]
+html.directory = "coverage"
+
+[tool.ruff.lint.per-file-ignores]
+"test/*" = ["F401", "F811"]
+
+[tool.hatch.build.targets.sdist]
+include = ["maple"]
+artifacts = ["resources"]
+
+[tool.hatch.build.targets.wheel]
+include = ["maple"]
+artifacts = ["resources"]
